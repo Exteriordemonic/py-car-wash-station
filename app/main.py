@@ -2,7 +2,9 @@ from typing import Callable
 
 
 class Car:
-    def __init__(self, comfort_class: int, clean_mark: int, brand: str) -> None:
+    def __init__(
+        self, comfort_class: int, clean_mark: int, brand: str
+    ) -> None:  # noqa: E501
         self.comfort_class = comfort_class
         self.clean_mark = clean_mark
         self.brand = brand
@@ -35,33 +37,38 @@ class Car:
 
 
 class CarWashStation:
-    def __init__(self, distance_from_city_center, clean_power, average_rating, count_of_ratings) -> None:
+    def __init__(
+        self,
+        distance_from_city_center: int,
+        clean_power: int,
+        average_rating: int,
+        count_of_ratings: int,  # noqa: E501
+    ) -> None:
         self.distance_from_city_center = distance_from_city_center
         self.clean_power = clean_power
         self.average_rating = average_rating
         self.count_of_ratings = count_of_ratings
         self.calculate_price_muliplayer()
 
-    
     @property
     def distance_from_city_center(self) -> float:
         return self._distance_from_city_center
 
     @distance_from_city_center.setter
-    def distance_from_city_center(self, value: int):
+    def distance_from_city_center(self, value: int) -> None:
         if value < 1:
             self._distance_from_city_center = 1
         elif value > 10:
             self._distance_from_city_center = 10
         else:
             self._distance_from_city_center = value
-            
+
     @property
     def average_rating(self) -> float:
         return self._average_rating
 
     @average_rating.setter
-    def average_rating(self, value: int):
+    def average_rating(self, value: int) -> None:
         if value < 1:
             self._average_rating = 1
         elif value > 5:
@@ -73,33 +80,47 @@ class CarWashStation:
         cars = self.filter_cars(cars, self.validate_car)
 
         income = 0
-        
-        for car in cars: 
+
+        for car in cars:
+            print(car.brand)
             income += self.calculate_washing_price(car)
             self.wash_single_car(car)
 
+        print(income)
+
         return income
 
-    def wash_single_car(self, car: Car):
+    def wash_single_car(self, car: Car) -> None:
         car.clean_mark = self.clean_power
 
     def rate_service(self, rate: float) -> None:
-        self.average_rating = round((self.average_rating * self.count_of_ratings + rate) / (self.count_of_ratings + 1), 1)
+        self.average_rating = round(
+            (self.average_rating * self.count_of_ratings + rate)
+            / (self.count_of_ratings + 1),
+            1,
+        )
         self.count_of_ratings += 1
 
         self.calculate_price_muliplayer()
 
-    def validate_car(self, car: Car):
+    def validate_car(self, car: Car) -> bool:
         return car.clean_mark < self.clean_power
 
     def filter_cars(self, cars: list[Car], filter_fun: Callable) -> list[Car]:
         return [car for car in cars if filter_fun(car)]
 
-    def calculate_washing_price (self, car: Car) -> float:
-        return round(car.comfort_class * self.calculate_car_multiplayer(car) * self.price_multiplayer, 1)
+    def calculate_washing_price(self, car: Car) -> float:
+        return round(
+            car.comfort_class
+            * self.calculate_car_multiplayer(car)
+            * self.price_multiplayer,
+            1,
+        )
 
-    def calculate_price_muliplayer(self):
-        self.price_multiplayer = round(self.average_rating / self.distance_from_city_center, 1)
+    def calculate_price_muliplayer(self) -> None:
+        self.price_multiplayer = (
+            self.average_rating / self.distance_from_city_center
+        )  # noqa: E501
 
-    def calculate_car_multiplayer(self, car):
+    def calculate_car_multiplayer(self, car: Car) -> int:
         return self.clean_power - car.clean_mark

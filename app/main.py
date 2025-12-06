@@ -74,7 +74,7 @@ class CarWashStation:
         elif value > 5:
             self._average_rating = 5
         else:
-            self._average_rating = value
+            self._average_rating = round(value, 1)
 
     def serve_cars(self, cars: list[Car]) -> float:
         cars = self.filter_cars(cars, self.validate_car)
@@ -82,16 +82,14 @@ class CarWashStation:
         income = 0
 
         for car in cars:
-            print(car.brand)
             income += self.calculate_washing_price(car)
             self.wash_single_car(car)
 
-        print(income)
-
-        return income
+        return round(income, 1)
 
     def wash_single_car(self, car: Car) -> None:
-        car.clean_mark = self.clean_power
+        if self.clean_power > car.clean_mark:
+            car.clean_mark = self.clean_power
 
     def rate_service(self, rate: float) -> None:
         self.average_rating = round(
